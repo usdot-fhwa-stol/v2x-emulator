@@ -34,7 +34,7 @@ args = parser.parse_args()
 
 
 # Logging
-c1t2x_logger = None
+v2x_logger = None
 LOGGING_LEVEL = logging.INFO
 logs_directory = PurePath.joinpath(Path.cwd(), "Logs")
 
@@ -44,16 +44,16 @@ if not os.path.exists(logs_directory):
 	os.mkdir(logs_directory, 0o775)
 
 # Setup logger with formatting
-log_filename = "c1t2x_OBU.log"
-c1t2x_logger = logging.getLogger(__name__)
-c1t2x_logger.setLevel(LOGGING_LEVEL)
-c1t2x_logger_handler = logging.FileHandler(os.path.join(logs_directory, log_filename), "w")
-c1t2x_logger_handler.setLevel(LOGGING_LEVEL)
-c1t2x_logger_formatter = logging.Formatter("[%(asctime)s.%(msecs)03d] %(levelname)s - %(message)s", datefmt= "%d-%b-%y %H:%M:%S")
-c1t2x_logger_handler.setFormatter(c1t2x_logger_formatter)
-c1t2x_logger.addHandler(c1t2x_logger_handler)
+log_filename = "v2x_OBU.log"
+v2x_logger = logging.getLogger(__name__)
+v2x_logger.setLevel(LOGGING_LEVEL)
+v2x_logger_handler = logging.FileHandler(os.path.join(logs_directory, log_filename), "w")
+v2x_logger_handler.setLevel(LOGGING_LEVEL)
+v2x_logger_formatter = logging.Formatter("[%(asctime)s.%(msecs)03d] %(levelname)s - %(message)s", datefmt= "%d-%b-%y %H:%M:%S")
+v2x_logger_handler.setFormatter(v2x_logger_formatter)
+v2x_logger.addHandler(v2x_logger_handler)
 # Start logging
-c1t2x_logger.info("\n---------------------------\nStarting C1T2X OBU Logger\n---------------------------")
+v2x_logger.info("\n---------------------------\nStarting V2X OBU Logger\n---------------------------")
 
 # Initialize error
 error = False
@@ -79,43 +79,43 @@ try:
 	loopTime = params['loop_time']
 	logLevel = params['logging_level']
 except Exception as e:
-	c1t2x_logger.error("Unable to import master yaml configs")
+	v2x_logger.error("Unable to import master yaml configs")
 	error = True
 	print("Unable to import yaml configs")
 	raise e
 
-if logLevel == 'DEBUG': c1t2x_logger.setLevel(logging.DEBUG)
-elif logLevel == 'INFO': c1t2x_logger.setLevel(logging.INFO)
-elif logLevel == 'ERROR': c1t2x_logger.setLevel(logging.ERROR)
-elif logLevel == 'WARNING': c1t2x_logger.setLevel(logging.WARNING)
+if logLevel == 'DEBUG': v2x_logger.setLevel(logging.DEBUG)
+elif logLevel == 'INFO': v2x_logger.setLevel(logging.INFO)
+elif logLevel == 'ERROR': v2x_logger.setLevel(logging.ERROR)
+elif logLevel == 'WARNING': v2x_logger.setLevel(logging.WARNING)
 else: 
-	c1t2x_logger.setLevel(logging.WARNING)
+	v2x_logger.setLevel(logging.WARNING)
 	print("Configured LOGGING LEVEL is invalid. Level is set to WARNING.")
-	c1t2x_logger.warning("Configured LOGGING LEVEL is invalid. Level is set to WARNING.")
+	v2x_logger.warning("Configured LOGGING LEVEL is invalid. Level is set to WARNING.")
 
 
 # Instantiate networks
 # LAN
 try:
-	lan = UDP_NET(CONFIG_FILE='LAN_params.yaml',logger=c1t2x_logger)
+	lan = UDP_NET(CONFIG_FILE='LAN_params.yaml',logger=v2x_logger)
 except:
 	error = True
 try:
 	lan.start_connection()
 except:
-	c1t2x_logger.warning("Not connected to a LAN interface")
+	v2x_logger.warning("Not connected to a LAN interface")
 	if printData:
 		print("Not connected to a LAN interface")
 
 # VANET
 try:
-	vanet = UDP_NET(CONFIG_FILE='VANET_params.yaml',logger=c1t2x_logger)
+	vanet = UDP_NET(CONFIG_FILE='VANET_params.yaml',logger=v2x_logger)
 except:
 	error = True
 try:
 	vanet.start_connection()
 except:
-	c1t2x_logger.warning("Not connected to a VANET interface")
+	v2x_logger.warning("Not connected to a VANET interface")
 	if printData:
 		print("Not connected to a VANET interface")
 
@@ -138,7 +138,7 @@ def VANET_listening_thread():
 
 		try:
 			pkt = vanet.recv_packets()
-			c1t2x_logger.debug("Received %s from VANET", pkt)
+			v2x_logger.debug("Received %s from VANET", pkt)
 			if pkt:
 				if not parseVANETPacket:
 					# Check if ack or payload
@@ -146,31 +146,31 @@ def VANET_listening_thread():
 					if data == "1":  # Ack
 						with mutex:
 							waiting_for_ack = False
-						c1t2x_logger.info("Received ack")
+						v2x_logger.info("Received ack")
 					elif data == previous_packet_received:  # Duplicate message received, so just resend ack
 						sendVANET(ack)
-						c1t2x_logger.info("Received duplicate message, resending ack")
+						v2x_logger.info("Received duplicate message, resending ack")
 					else:  # New message received, forward it to LAN and send ack
 						sendVANET(ack)
 						sendLAN(pkt[0])
 						previous_packet_received = pkt[0]
-						c1t2x_logger.info("Received new message, sent ack")
+						v2x_logger.info("Received new message, sent ack")
 				else:
 					# feature to parse incoming VANET message is not yet enabled
-					c1t2x_logger.error("Feature to parse incoming VANET message is not yet enabled")
+					v2x_logger.error("Feature to parse incoming VANET message is not yet enabled")
 					raise NotImplementedError
 				if printData:
 					print(pkt)
 		except:
 			if printData:
 				print("Waiting to configure LAN")
-			c1t2x_logger.info("Waiting to configure LAN")
+			v2x_logger.info("Waiting to configure LAN")
 			time.sleep(0.25)
 		time.sleep(loopTime)
 
 	with mutex:
 		error = True
-		c1t2x_logger.info("Terminating VANET Thread")
+		v2x_logger.info("Terminating VANET Thread")
 
 def LAN_listening_thread():
 	global error, waiting_for_ack
@@ -178,7 +178,7 @@ def LAN_listening_thread():
 	while not lan.error:
 		with mutex:
 			if error:
-				c1t2x_logger.info("Terminating LAN Thread")
+				v2x_logger.info("Terminating LAN Thread")
 				break
 
 		try:
@@ -188,13 +188,13 @@ def LAN_listening_thread():
 					sendVANET(pkt[0])
 					# Wait for ack
 					waiting_for_ack = True
-					c1t2x_logger.info("Message sent, waiting for ack")
+					v2x_logger.info("Message sent, waiting for ack")
 					time.sleep(1.0)
 					for i in range(120):  # Attempt to rebroadcast for 2 minutes before giving up
 						with mutex:
 							if waiting_for_ack:
 								sendVANET(pkt[0])
-								c1t2x_logger.info("Still waiting for ack")
+								v2x_logger.info("Still waiting for ack")
 							else:
 								break
 						time.sleep(1.0)
@@ -204,18 +204,18 @@ def LAN_listening_thread():
 					# feature to parse incoming LAN packet is not enabled
 					# this feature may be used for things like responding to requests from the LAN connection, etc.
 					# there is no intent for this feature to be enabled but it is being allocated space in the code
-					c1t2x_logger.error("Feature to parse incoming LAN is not enabled")
+					v2x_logger.error("Feature to parse incoming LAN is not enabled")
 					raise NotImplementedError
 		except:
 			if printData:
 				print("Waiting to configure VANET")
-			c1t2x_logger.debug("Waiting to configure VANET")
+			v2x_logger.debug("Waiting to configure VANET")
 			time.sleep(0.25)
 		time.sleep(loopTime)
 
 	with mutex:
 		error = True
-		c1t2x_logger.info("Terminating LAN Thread")
+		v2x_logger.info("Terminating LAN Thread")
 
 # Removes unnecessary RSU header information
 # Source: https://github.com/usdot-fhwa-stol/carma-platform/blob/develop/engineering_tools/msgIntersect.py
@@ -240,25 +240,25 @@ def main():
 	threads.append(VANET_mt)
 
 	for thread in threads:
-		c1t2x_logger.debug("Starting %s", thread.name)
+		v2x_logger.debug("Starting %s", thread.name)
 		thread.daemon=True
 		thread.start()
 		time.sleep(0.2)
-	c1t2x_logger.debug("All Threads Started")
+	v2x_logger.debug("All Threads Started")
 
 	try:
 		while not error:
 			time.sleep(1)
 	except KeyboardInterrupt:
-		c1t2x_logger.critical("Keyboard Interrupt Occurred")
+		v2x_logger.critical("Keyboard Interrupt Occurred")
 	finally:
 		error = True
-		c1t2x_logger.critical("\n---------------------------\nTerminating C1T2X OBU Logger\n---------------------------")
+		v2x_logger.critical("\n---------------------------\nTerminating V2X OBU Logger\n---------------------------")
 
 # code starts here
 if __name__ == '__main__':
 
-	# print to terminal that C1T2X radio is starting up
-	print("----------------------------------------------------\nSTARTING C1T2X RADIO\n----------------------------------------------------")
+	# print to terminal that V2X radio is starting up
+	print("----------------------------------------------------\nSTARTING V2X RADIO\n----------------------------------------------------")
 	
 	main()

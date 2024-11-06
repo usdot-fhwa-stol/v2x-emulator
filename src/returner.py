@@ -175,7 +175,7 @@ def main():
 # code starts here
 if __name__ == '__main__':
 
-    # print to terminal that C1T2X radio is starting up
-    print("----------------------------------------------------\nSTARTING C1T2X RADIO\n----------------------------------------------------")
+    # print to terminal that V2X radio is starting up
+    print("----------------------------------------------------\nSTARTING V2X RADIO\n----------------------------------------------------")
     
     main()

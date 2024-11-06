@@ -1,6 +1,6 @@
 # CARMA 1tenth Vehicle to Everything
 
-c1t2x-emulator is a new repository that enables Raspberry Pi’s to act as mock Onboard Units (OBUs) and Roadside Units (RSUs) for the C1T platform. This includes the ability to communicate with vehicles and V2X Hub instances, as well as forwarding messages over WiFi to other Raspberry Pi’s. This repo provides code for the CARMA 1tenth (C1T) Vehicle to Everything (V2X) radio emulator (C1T2X) on a Raspberry Pi 4B+.
+v2x-emulator is a new repository that enables Raspberry Pi’s to act as mock Onboard Units (OBUs) and Roadside Units (RSUs) for the CDA1tenth platform. This includes the ability to communicate with vehicles and V2X Hub instances, as well as forwarding messages over WiFi to other Raspberry Pi’s. This repo provides code for the CDA1tenth Vehicle to Everything (V2X) radio emulator on a Raspberry Pi 4B+.
 
 ## Python requirements
 This package requires the following three python packages:
@@ -8,31 +8,31 @@ This package requires the following three python packages:
 - [ruamel.yaml](https://pypi.org/project/ruamel.yaml/)
 - [asn1tools](https://pypi.org/project/asn1tools/)
 
-These packages can be installed by navigating to the C1T2X directory, and running:
+These packages can be installed by navigating to the V2X directory, and running:
 ```
 sudo pip install -r ./requirements.txt
 ```
 
 ## Functionality
-The C1T2X radios function similar to the DSRC radios used by CARMA Platform equipped vehicles in that they receive UDP packets from a PC and broadcast them "over the air." The radios used by the CARMA Platform are configured to be in Road Side Unit (RSU) mode where messages are forwarded, and C1T2X seeks to emulate this behavior.
+The V2X radios function similar to the DSRC radios used by CARMA Platform equipped vehicles in that they receive UDP packets from a PC and broadcast them "over the air." The radios used by the CARMA Platform are configured to be in Road Side Unit (RSU) mode where messages are forwarded, and V2X seeks to emulate this behavior.
 
-The C1T2X radios are intended to use the same driver as the full-scale CARMA vehicle's DSRC radios, specifically the [carma-cohda-dsrc-driver](https://github.com/usdot-fhwa-stol/carma-cohda-dsrc-driver).
+The V2X radios are intended to use the same driver as the full-scale CARMA vehicle's DSRC radios, specifically the [carma-cohda-dsrc-driver](https://github.com/usdot-fhwa-stol/carma-cohda-dsrc-driver).
 
-The C1T2X solution uses the WiFi band for its Vehicle Area Network (VANET) rather than Dedicated Short Range Communications (DSRC) or Cellular V2X (C-V2X). It is intended to be an educational tool used to facilitate communication and cooperation between scaled-down vehicles and infrastructure - and it not intended as a deployable solution. Public Deployment of a WiFi-based VANET is outside of the scope of the C1T project, and may be susceptible to restrictions/guidelines from the Federal Communications Commission (FCC).
+The V2X solution uses the WiFi band for its Vehicle Area Network (VANET) rather than Dedicated Short Range Communications (DSRC) or Cellular V2X (C-V2X). It is intended to be an educational tool used to facilitate communication and cooperation between scaled-down vehicles and infrastructure - and it not intended as a deployable solution. Public Deployment of a WiFi-based VANET is outside of the scope of the CDA1tenth project, and may be susceptible to restrictions/guidelines from the Federal Communications Commission (FCC).
 
-C1T2X radios are capable of running their own applications through threading - provided that message decoding/encoding and parsing is enabled.
+V2X radios are capable of running their own applications through threading - provided that message decoding/encoding and parsing is enabled.
 At this time, the radios do not decode or encode packets and function only to forward messages - similar to the full scale CARMA Platform vehicles' radios. However, further work can be done to enable this.
 
-At a high level, the C1T2X radios can:
-- Receive UDP packets over the LAN from the Jetson Xavier
+At a high level, the V2X radios can:
+- Receive UDP packets over the LAN from the connected vehicle computer
 - Broadcast UDP packets over the VANET to other scaled-down cooperative entities
 - Receive UDP packets over the VANET from other scaled-down cooperative entities
-- Broadcast UDP packets over the LAN to the Jetson Xavier
+- Broadcast UDP packets over the LAN to the connected vehicle computer
 
-Broadcasting over WiFi for the VANET allows for each C1T2X radio to receive its own messages that it broadcasts. The C1T2X radio checks the IP of the device that sends each message, and filters out messages that are sent from its own IP.
+Broadcasting over WiFi for the VANET allows for each V2X radio to receive its own messages that it broadcasts. The V2X radio checks the IP of the device that sends each message, and filters out messages that are sent from its own IP.
 
 ## Configuration
-The C1T2X radios are connected to both a local area network (the connection between the Pi and a Jetson Xavier NX with a crossover ethernet cable) and a wireless network (the VANET).
+The V2X radios are connected to both a local area network (the connection between the Pi and a vehicle computer with a crossover ethernet cable) and a wireless network (the VANET).
 
 The radios should be configured to work on each network by adjusting the parameters in the following two YAML files:
 1. `./src/Networking/config/LAN_params.yaml`
@@ -67,13 +67,13 @@ The returner will receive the message, and send the message back over the vanet.
 The broadcaster will receive the message, and it will compare the received copy against the originally broadcasted copy.
 
 ## Running
-Once all config files are correctly made, run the `C1T2X_OBU.py` script to start the on board unit (OBU) emulator. This can be run on boot automatically with a crontab job
+Once all config files are correctly made, run the `V2X_OBU.py` script to start the on board unit (OBU) emulator. This can be run on boot automatically with a crontab job
 
 ```
-ln -s /home/$USER/c1t_ws/src/c1t2x-emulator/src/C1T2X_OBU.py /bin/C1T2X_OBU.py
+ln -s /home/$USER/cda_ws/src/v2x-emulator/src/V2X_OBU.py /bin/V2X_OBU.py
 crontab -e
 # Add this line to the end
-@reboot python /bin/C1T2X_OBU.py &
+@reboot python /bin/V2X_OBU.py &
 ```
 
 ## Contribution
