@@ -24,15 +24,15 @@ V2X radios are capable of running their own applications through threading - pro
 At this time, the radios do not decode or encode packets and function only to forward messages - similar to the full scale CARMA Platform vehicles' radios. However, further work can be done to enable this.
 
 At a high level, the V2X radios can:
-- Receive UDP packets over the LAN from the Jetson Xavier
+- Receive UDP packets over the LAN from the connected vehicle computer
 - Broadcast UDP packets over the VANET to other scaled-down cooperative entities
 - Receive UDP packets over the VANET from other scaled-down cooperative entities
-- Broadcast UDP packets over the LAN to the Jetson Xavier
+- Broadcast UDP packets over the LAN to the connected vehicle computer
 
 Broadcasting over WiFi for the VANET allows for each V2X radio to receive its own messages that it broadcasts. The V2X radio checks the IP of the device that sends each message, and filters out messages that are sent from its own IP.
 
 ## Configuration
-The V2X radios are connected to both a local area network (the connection between the Pi and a Jetson Xavier NX with a crossover ethernet cable) and a wireless network (the VANET).
+The V2X radios are connected to both a local area network (the connection between the Pi and a vehicle computer with a crossover ethernet cable) and a wireless network (the VANET).
 
 The radios should be configured to work on each network by adjusting the parameters in the following two YAML files:
 1. `./src/Networking/config/LAN_params.yaml`
