@@ -1,0 +1,9 @@
+[Unit]
+Description=Start v2x-emulator script automatically on startup after OnBootSec timer
+
+[Timer]
+OnBootSec=20s
+Unit=v2x-emulator.service
+
+[Install]
+WantedBy=multi-user.target
