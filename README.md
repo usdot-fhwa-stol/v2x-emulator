@@ -38,7 +38,7 @@ The radios should be configured to work on each network by adjusting the paramet
 1. `./src/Networking/config/LAN_params.yaml`
 2. `./src/Networking/config/VANET_params.yaml`
 
-The IP, Port, and Network interface for each network must be set correctly. The IP and Port that are used for the LAN network should relate to the IP and Port in the ROS2 driver's params.yaml and dsrc.cfg files from the `carma-cohda-dsrc-driver` package.
+The IP, Port, and Network interface for each network must be set correctly. The IP and Port that are used for the LAN network should relate to the IP and Port in the ROS 2 driver's params.yaml and dsrc.cfg files from the `carma-cohda-dsrc-driver` package.
 
 If the wireless and wired network interfaces are unknown, the following command will identify the available network interfaces:
 ```
@@ -51,11 +51,11 @@ The VANET IP and Port that are used should be consistent across all radios on th
 You can test a full loop of the VANET with the scripts broadcaster.py and returner.py
 
 Configure the parameter YAML files on two machines and:
-- on one machine, run:
+- On one machine, run:
 ```
 python broadcaster.py vanet
 ```
-- on the other machine, run:
+- On the other machine, run:
 ```
 python returner.py vanet
 ```
@@ -67,12 +67,31 @@ The returner will receive the message, and send the message back over the vanet.
 The broadcaster will receive the message, and it will compare the received copy against the originally broadcasted copy.
 
 ## Running
-Once all config files are correctly made, run the `V2X_OBU.py` script to start the on board unit (OBU) emulator. This can be run on boot automatically with a crontab job
+Once all config files are correctly made, run the `V2X_OBU.py` script to start the on board unit (OBU) emulator script. This can be run on boot automatically with a systemd service **OR** as a crontab job. This will need to be set up for both ends of the system to support communication between the vehicle and infrastructure and auto starting the emulator script is highly recommended.
 
+### Systemd (preferred)
+Copy both `v2x-emulator.timer` and `v2x-emulator.service` into `/usr/lib/systemd/system` and run the following commands to enable the service:
+```
+sudo systemctl daemon-reload
+sudo systemctl start v2x-emulator.timer
+```
+Check the status to verify the service is active as expected:
+```
+sudo systemctl status v2x-emulator.service
+```
+Enable the service to launch on startup if so:
+```
+sudo systemctl enable v2x-emulator.timer
+```
+
+
+### Crontab
+Link the v2x-emulator script to a /bin location:
 ```
 ln -s /home/$USER/cda_ws/src/v2x-emulator/src/V2X_OBU.py /bin/V2X_OBU.py
-crontab -e
-# Add this line to the end
+```
+Edit crontab with `crontab -e` and add the following line:
+```
 @reboot python /bin/V2X_OBU.py &
 ```
 
