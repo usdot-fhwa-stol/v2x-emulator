@@ -129,12 +129,11 @@ class UDP_NET:
 		try:
 			packet = self.sock.recvfrom(self.bufferSize)
 			# checks if received packet is from self
-			if packet[1][0] != self.selfIP:
-				self.logger.info("{}: Received '{}' from {}".format(self.netType, packet[0], packet[1][0]))
-				return packet
-			else:
-				self.logger.debug("{}: Received packet from self @ IP: {}".format(self.netType,packet[1][0]))
+			self.logger.info("{}: Received '{}' from {}:{}".format(self.netType, packet[0], packet[1][0], packet[1][1]))
+			if packet[1][0] == "192.168.0.95" and packet[1][1] == 1517:
+				self.logger.info("Received ack from self, ignoring...")
 				return None
+			return packet
 		except:
 			self.logger.warning("Attempted to receive message from the {} - it may not yet be connected".format(self.netType))
 			if self.print_data:
