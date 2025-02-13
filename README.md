@@ -14,9 +14,9 @@ sudo pip install -r ./requirements.txt
 ```
 
 ## Functionality
-The V2X radios function similar to the DSRC radios used by CARMA Platform equipped vehicles in that they receive UDP packets from a PC and broadcast them "over the air." The radios used by the CARMA Platform are configured to be in Road Side Unit (RSU) mode where messages are forwarded, and V2X seeks to emulate this behavior.
+The V2X radios function similar to the radios used by CARMA Platform equipped vehicles in that they receive UDP packets from a PC and broadcast them "over the air." The radios used by the CARMA Platform are configured to be in Road Side Unit (RSU) mode where messages are forwarded, and V2X seeks to emulate this behavior.
 
-The V2X radios are intended to use the same driver as the full-scale CARMA vehicle's DSRC radios, specifically the [v2x-ros-driver](https://github.com/usdot-fhwa-stol/v2x-ros-driver).
+The V2X radios are intended to use the same driver as the full-scale CARMA vehicle's V2X radios, specifically the [v2x-ros-driver](https://github.com/usdot-fhwa-stol/v2x-ros-driver).
 
 The V2X solution uses the WiFi band for its Vehicle Area Network (VANET) rather than Dedicated Short Range Communications (DSRC) or Cellular V2X (C-V2X). It is intended to be an educational tool used to facilitate communication and cooperation between scaled-down vehicles and infrastructure - and it not intended as a deployable solution. Public Deployment of a WiFi-based VANET is outside of the scope of the CDA1tenth project, and may be susceptible to restrictions/guidelines from the Federal Communications Commission (FCC).
 
