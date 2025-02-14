@@ -14,9 +14,9 @@ sudo pip install -r ./requirements.txt
 ```
 
 ## Functionality
-The V2X radios function similar to the DSRC radios used by CARMA Platform equipped vehicles in that they receive UDP packets from a PC and broadcast them "over the air." The radios used by the CARMA Platform are configured to be in Road Side Unit (RSU) mode where messages are forwarded, and V2X seeks to emulate this behavior.
+The V2X radios function similar to the radios used by CARMA Platform equipped vehicles in that they receive UDP packets from a PC and broadcast them "over the air." The radios used by the CARMA Platform are configured to be in Road Side Unit (RSU) mode where messages are forwarded, and V2X seeks to emulate this behavior.
 
-The V2X radios are intended to use the same driver as the full-scale CARMA vehicle's DSRC radios, specifically the [carma-cohda-dsrc-driver](https://github.com/usdot-fhwa-stol/carma-cohda-dsrc-driver).
+The V2X radios are intended to use the same driver as the full-scale CARMA vehicle's V2X radios, specifically the [v2x-ros-driver](https://github.com/usdot-fhwa-stol/v2x-ros-driver).
 
 The V2X solution uses the WiFi band for its Vehicle Area Network (VANET) rather than Dedicated Short Range Communications (DSRC) or Cellular V2X (C-V2X). It is intended to be an educational tool used to facilitate communication and cooperation between scaled-down vehicles and infrastructure - and it not intended as a deployable solution. Public Deployment of a WiFi-based VANET is outside of the scope of the CDA1tenth project, and may be susceptible to restrictions/guidelines from the Federal Communications Commission (FCC).
 
@@ -38,7 +38,7 @@ The radios should be configured to work on each network by adjusting the paramet
 1. `./src/Networking/config/LAN_params.yaml`
 2. `./src/Networking/config/VANET_params.yaml`
 
-The IP, Port, and Network interface for each network must be set correctly. The IP and Port that are used for the LAN network should relate to the IP and Port in the ROS2 driver's params.yaml and dsrc.cfg files from the `carma-cohda-dsrc-driver` package.
+The IP, Port, and Network interface for each network must be set correctly. The IP and Port that are used for the LAN network should relate to the IP and Port in the ROS2 driver's params.yaml and dsrc.cfg files from the `v2x-ros-driver` package.
 
 If the wireless and wired network interfaces are unknown, the following command will identify the available network interfaces:
 ```
@@ -77,16 +77,16 @@ crontab -e
 ```
 
 ## Contribution
-Welcome to the CARMA contributing guide. Please read this guide to learn about our development process, how to propose pull requests and improvements, and how to build and test your changes to this project. [CARMA Contributing Guide](https://github.com/usdot-fhwa-stol/carma-platform/blob/develop/Contributing.md) 
+Welcome to the CARMA contributing guide. Please read this guide to learn about our development process, how to propose pull requests and improvements, and how to build and test your changes to this project. [CARMA Contributing Guide](https://github.com/usdot-fhwa-stol/carma-platform/blob/develop/Contributing.md)
 
-## Code of Conduct 
+## Code of Conduct
 Please read our [CARMA Code of Conduct](https://github.com/usdot-fhwa-stol/carma-platform/blob/develop/Code_of_Conduct.md) which outlines our expectations for participants within the CARMA community, as well as steps to reporting unacceptable behavior. We are committed to providing a welcoming and inspiring community for all and expect our code of conduct to be honored. Anyone who violates this code of conduct may be banned from the community.
 
 ## Attribution
-The development team would like to acknowledge the people who have made direct contributions to the design and code in this repository. [CARMA Attribution](https://github.com/usdot-fhwa-stol/carma-platform/blob/develop/ATTRIBUTION.txt) 
+The development team would like to acknowledge the people who have made direct contributions to the design and code in this repository. [CARMA Attribution](https://github.com/usdot-fhwa-stol/carma-platform/blob/develop/ATTRIBUTION.txt)
 
 ## License
-By contributing to the Federal Highway Administration (FHWA) Connected Automated Research Mobility Applications (CARMA), you agree that your contributions will be licensed under its Apache License 2.0 license. [CARMA License](https://github.com/usdot-fhwa-stol/carma-platform/blob/develop/docs/License.md) 
+By contributing to the Federal Highway Administration (FHWA) Connected Automated Research Mobility Applications (CARMA), you agree that your contributions will be licensed under its Apache License 2.0 license. [CARMA License](https://github.com/usdot-fhwa-stol/carma-platform/blob/develop/docs/License.md)
 
 ## Contact
 Please click on the CARMA logo below to visit the Federal Highway Adminstration(FHWA) CARMA website. For technical support from the CARMA team, please contact the CARMA help desk at CAVSupportServices@dot.gov.
