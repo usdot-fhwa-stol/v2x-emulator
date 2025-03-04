@@ -21,6 +21,7 @@ from threading import Thread, Lock
 from pathlib import Path, PurePath
 import argparse
 from binascii import unhexlify
+import re
 
 from Networking.networking import UDP_NET
 
@@ -127,6 +128,13 @@ def sendLAN(lPacket):
 	global lan
 	lan.send_data(strip_header(lPacket))
 
+def checkMessageType(message):
+	try:
+		match = re.search(rb'Type=([A-Za-z0-9]+)', message)
+	except Exception as e:
+		v2x_logger.info("%s", e)
+	return match.group(1).decode('utf-8') if match else ""
+
 def VANET_listening_thread():
 	global error, waiting_for_ack
 	previous_packet_received = ""
@@ -143,18 +151,22 @@ def VANET_listening_thread():
 				if not parseVANETPacket:
 					# Check if ack or payload
 					data = pkt[0].decode('utf-8')
+					message_type = checkMessageType(pkt[0])
 					if data == "1":  # Ack
 						with mutex:
 							waiting_for_ack = False
 						v2x_logger.info("Received ack")
-					elif data == previous_packet_received:  # Duplicate message received, so just resend ack
-						sendVANET(ack)
-						v2x_logger.info("Received duplicate message, resending ack")
-					else:  # New message received, forward it to LAN and send ack
-						sendVANET(ack)
-						sendLAN(pkt[0])
+					elif message_type in {"MobilityOperation", "TMSG03"}: 
+						if data == previous_packet_received:  # Duplicate message received, so just resend ack
+							v2x_logger.info("Received duplicate message, resending ack")
+						else:  # New message received, forward it to LAN and send ack
+							v2x_logger.info("Received new message, sent ack")
+							sendLAN(pkt[0])
 						previous_packet_received = pkt[0]
-						v2x_logger.info("Received new message, sent ack")
+						sendVANET(ack)
+					else:
+						sendLAN(pkt[0])
+
 				else:
 					# feature to parse incoming VANET message is not yet enabled
 					v2x_logger.error("Feature to parse incoming VANET message is not yet enabled")
@@ -186,20 +198,22 @@ def LAN_listening_thread():
 			if pkt:
 				if not parseLANPacket:
 					sendVANET(pkt[0])
-					# Wait for ack
-					waiting_for_ack = True
-					v2x_logger.info("Message sent, waiting for ack")
-					time.sleep(1.0)
-					for i in range(120):  # Attempt to rebroadcast for 2 minutes before giving up
-						with mutex:
-							if waiting_for_ack:
-								sendVANET(pkt[0])
-								v2x_logger.info("Still waiting for ack")
-							else:
-								break
-						time.sleep(1.0)
-					if waiting_for_ack:
-						raise Exception("Ack was never received")
+					message_type = checkMessageType(pkt[0])
+					if message_type in {"MobilityOperation", "TMSG03"}:
+						# Wait for ack
+						waiting_for_ack = True
+						v2x_logger.info("Message sent, waiting for ack")
+						time.sleep(0.1)
+						for i in range(1200):  # Attempt to rebroadcast for 2 minutes before giving up
+							with mutex:
+								if waiting_for_ack:
+									sendVANET(pkt[0])
+									v2x_logger.info("Still waiting for ack")
+								else:
+									break
+							time.sleep(0.1)
+						if waiting_for_ack:
+							raise Exception("Ack was never received")
 				else:
 					# feature to parse incoming LAN packet is not enabled
 					# this feature may be used for things like responding to requests from the LAN connection, etc.
