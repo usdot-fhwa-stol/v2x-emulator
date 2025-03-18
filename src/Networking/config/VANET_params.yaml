@@ -16,13 +16,15 @@
 NET_TYPE: 'VANET'
 
 # String: Networking IP to send to for the VANET
-sendIP: '192.168.0.255'
+# TODO: does not currently support multiple vehicles
+sendIP: '192.168.0.141'
 
 # Integer: Networking Port to send to for the VANET
 sendPORT: 1517
 
 # String: Networking IP to receive from on the VANET
-recvIP: '192.168.0.255'
+# TODO: does not currently support multiple vehicles
+recvIP: '192.168.0.96'
 
 # Integer: Networking port to receive from on the VANET
 recvPORT: 1517
