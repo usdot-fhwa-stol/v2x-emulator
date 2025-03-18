@@ -204,7 +204,7 @@ def LAN_listening_thread():
 						waiting_for_ack = True
 						v2x_logger.info("Message sent, waiting for ack")
 						time.sleep(1.0)
-						for i in range(1200):  # Attempt to rebroadcast for 2 minutes before giving up
+						for i in range(120):  # Attempt to rebroadcast for 2 minutes before giving up
 							with mutex:
 								if waiting_for_ack:
 									sendVANET(pkt[0])
