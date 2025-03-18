@@ -156,13 +156,13 @@ def VANET_listening_thread():
 						with mutex:
 							waiting_for_ack = False
 						v2x_logger.info("Received ack")
-					elif message_type in {"MobilityOperation", "TMSG03"}: 
+					elif message_type in {"MobilityOperation", "TMSG03"}:
 						if data == previous_packet_received:  # Duplicate message received, so just resend ack
 							v2x_logger.info("Received duplicate message, resending ack")
 						else:  # New message received, forward it to LAN and send ack
 							v2x_logger.info("Received new message, sent ack")
 							sendLAN(pkt[0])
-						previous_packet_received = pkt[0]
+						previous_packet_received = data
 						sendVANET(ack)
 					else:
 						sendLAN(pkt[0])
@@ -203,7 +203,7 @@ def LAN_listening_thread():
 						# Wait for ack
 						waiting_for_ack = True
 						v2x_logger.info("Message sent, waiting for ack")
-						time.sleep(0.1)
+						time.sleep(1.0)
 						for i in range(1200):  # Attempt to rebroadcast for 2 minutes before giving up
 							with mutex:
 								if waiting_for_ack:
@@ -211,7 +211,7 @@ def LAN_listening_thread():
 									v2x_logger.info("Still waiting for ack")
 								else:
 									break
-							time.sleep(0.1)
+							time.sleep(1.0)
 						if waiting_for_ack:
 							raise Exception("Ack was never received")
 				else:
