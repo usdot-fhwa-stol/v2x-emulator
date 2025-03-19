@@ -159,9 +159,9 @@ def VANET_listening_thread():
 						v2x_logger.info("Received ack")
 					elif message_type in {"MobilityOperation", "TMSG03"}:
 						if data == previous_packet_received:  # Duplicate message received, so just resend ack
-							v2x_logger.info("Received duplicate MOM, resending ack")
+							v2x_logger.info("Received duplicate %s, resending ack", message_type)
 						else:  # New message received, forward it to LAN and send ack
-							v2x_logger.info("Received new MOM, sent ack")
+							v2x_logger.info("Received new %s, sent ack", message_type)
 							sendLAN(pkt[0])
 						previous_packet_received = data
 						sendVANET(ack)
@@ -203,18 +203,18 @@ def LAN_listening_thread():
 					if message_type in {"MobilityOperation", "TMSG03"}:
 						# Wait for ack
 						waiting_for_ack = True
-						v2x_logger.info("MOM sent, waiting for ack")
+						v2x_logger.info("%s sent, waiting for ack", message_type)
 						time.sleep(1.0)
 						for i in range(120):  # Attempt to rebroadcast for 2 minutes before giving up
 							with mutex:
 								if waiting_for_ack:
 									sendVANET(pkt[0])
-									v2x_logger.info("Still waiting for ack")
+									v2x_logger.info("Still waiting for %s ack", message_type)
 								else:
 									break
 							time.sleep(1.0)
 						if waiting_for_ack:
-							raise Exception("Ack was never received")
+							raise Exception("Ack for %s was never received", message_type)
 				else:
 					# feature to parse incoming LAN packet is not enabled
 					# this feature may be used for things like responding to requests from the LAN connection, etc.
