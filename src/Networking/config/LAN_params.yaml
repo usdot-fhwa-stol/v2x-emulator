@@ -13,13 +13,15 @@
 # the License.
 
 # String: Networking IP to send to on LAN
-sendIP: '192.168.88.10'
+#sendIP: '192.168.88.10'    # For use with an ethernet-connected Raspberry Pi
+sendIP: '127.0.0.1'         # For use internally on a device
 
 # Integer: Networking Port to send to on LAN
 sendPORT: 5398
 
 # String: Networking IP to receive from on LAN
-recvIP: '192.168.88.40'
+#recvIP: '192.168.88.40'    # For use with an ethernet-connected Raspberry Pi
+recvIP: '127.0.0.1'         # For use internally on a device
 
 # Integer: Networking port to receive from on LAN
 recvPORT: 1516
@@ -30,4 +32,5 @@ BUFFER_SIZE: 4096
 
 # String: Interface for which to pull own IP
 # Units: Interface
-INTERFACE: 'eth0'
+#INTERFACE: 'eth0'          # For use with an ethernet-connected Raspberry Pi
+INTERFACE: 'lo'             # For use internally on a device
