@@ -1,0 +1,16 @@
+[Unit]
+Description=Service to run the v2x-emulator script
+After=syslog.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/v2x-emulator
+ExecStart=/usr/bin/python3 /home/ubuntu/v2x-emulator/src/V2X_OBU.py
+Restart=on-failure
+
+StandardOutput=syslog
+StandardError=syslog
+
+[Install]
+WantedBy=default.target
