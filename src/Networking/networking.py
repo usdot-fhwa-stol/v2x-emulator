@@ -132,6 +132,9 @@ class UDP_NET:
 			if packet[1][0] != self.selfIP:
 				self.logger.info("{}: Received '{}' from {}".format(self.netType, packet[0], packet[1][0]))
 				return packet
+			elif packet[1][0] == '127.0.0.1' and self.selfIP == '127.0.0.1':
+				self.logger.info("{}: Received '{}' from {} with localhost IP".format(self.netType, packet[0], packet[1][0]))
+				return packet				
 			else:
 				self.logger.debug("{}: Received packet from self @ IP: {}".format(self.netType,packet[1][0]))
 				return None
