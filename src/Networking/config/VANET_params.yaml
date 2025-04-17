@@ -15,17 +15,17 @@
 # String: Network Type
 NET_TYPE: 'VANET'
 
-# String: Networking IP to send to for the VANET (Infrastructure PC/RSU)
+# String: Networking IP to send to for the VANET (Infrastructure PC/RSU wireless IP)
 # TODO: Does not currently support multiple vehicles
 #sendIP: '192.168.0.255'
-sendIP: '192.168.0.96'
+sendIP: '192.168.1.10'
 
 # Integer: Networking Port to send to for the VANET
 sendPORT: 1517
 
-# String: Networking IP to receive from on the VANET (OBU)
+# String: Networking IP to receive from on the VANET (OBU wireless IP)
 # TODO: does not currently support multiple vehicles
-recvIP: '192.168.0.141'
+recvIP: '192.168.1.100'
 
 # Integer: Networking port to receive from on the VANET
 recvPORT: 1517
